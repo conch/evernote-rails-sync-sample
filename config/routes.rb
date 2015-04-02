@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   get 'temp_auth' => 'welcome#temp_auth'
   get 'callback' => 'welcome#callback'
   get 'logout' => 'welcome#logout'
+  get 'recipes' => 'recipes#index'
+  get 'recipe_thumbnail/:note_guid' => 'recipes#thumbnail'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

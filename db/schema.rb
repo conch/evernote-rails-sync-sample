@@ -25,4 +25,16 @@ ActiveRecord::Schema.define(version: 20150401190456) do
   end
 
   add_index "evernote_accounts", ["user_id"], name: "index_evernote_accounts_on_user_id", unique: true, using: :btree
+
+  create_table "recipes", force: :cascade do |t|
+    t.string  "title"
+    t.string  "guid"
+    t.integer "update_sequence_num"
+    t.integer "largest_resource_size"
+    t.integer "evernote_account_id",   null: false
+  end
+
+  add_index "recipes", ["guid"], name: "index_recipes_on_guid", using: :btree
+
+  add_foreign_key "recipes", "evernote_accounts"
 end

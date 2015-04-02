@@ -1,0 +1,20 @@
+<a href='/'>Go home</a>
+<h1>Recipes in your Evernote account</h1>
+<table>
+  <% @noteMetadatas.each_with_index do |noteMetadata, index| %>
+    <% if index % 4 == 0 %>
+      <tr>
+    <% end %>
+    <td>
+      <% if noteMetadata.largest_resource_size? && noteMetadata.largest_resource_size > 0 %>
+        <div class="thumbnail" style="background-image:url('/recipe_thumbnail/<%= noteMetadata.guid %>?size=233')"></div>
+      <% else %>
+        <div class="thumbnail"></div>
+      <% end %>
+      <a href="<%= ENV["EVERNOTE_URL"] %>/shard/<%= @account.shard %>/nl/<%= @account.user_id %>/<%= noteMetadata.guid %>" target="_blank"><%= noteMetadata.title %></a>
+    </td>
+    <% if index % 4 == 3 %>
+      </tr>
+    <% end %>
+  <% end %>
+</table>

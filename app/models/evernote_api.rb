@@ -27,7 +27,7 @@ class EvernoteApi
       @account.update(update_count: syncState.updateCount)
     end
 
-    Recipe.where("evernote_account_id = " + @account.id.to_s).order(title: :asc)
+    EvernoteRecipe.where("evernote_account_id = " + @account.id.to_s).order(title: :asc)
   end
 
   def revoke_token
@@ -45,7 +45,7 @@ class EvernoteApi
     notesMetadataList = noteStore.findNotesMetadata(@account.token, filter, start_index, max_notes, spec)
     notesMetadataList.notes.each do |n|
       if n.updateSequenceNum > @account.update_count
-        recipe = Recipe.where(evernote_account_id: @account.id, guid: n.guid).take
+        recipe = EvernoteRecipe.where(evernote_account_id: @account.id, guid: n.guid).take
         if recipe
           if n.title != recipe.title
             recipe.title = n.title
@@ -58,7 +58,7 @@ class EvernoteApi
           end
           recipe.save
         else
-          Recipe.create(
+          EvernoteRecipe.create(
             evernote_account_id: @account.id,
             title: n.title,
             guid: n.guid,

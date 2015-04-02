@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150401190456) do
+ActiveRecord::Schema.define(version: 20150402011854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,18 @@ ActiveRecord::Schema.define(version: 20150401190456) do
   end
 
   add_index "evernote_recipes", ["guid"], name: "index_evernote_recipes_on_guid", using: :btree
+
+  create_table "recipes", force: :cascade do |t|
+    t.string "title"
+    t.string "author"
+    t.string "prep_time"
+    t.string "intro"
+    t.string "ingredients",  array: true
+    t.string "instructions", array: true
+    t.string "pic_url"
+    t.string "pic_credit"
+    t.string "url"
+  end
 
   add_foreign_key "evernote_recipes", "evernote_accounts"
 end

@@ -1,4 +1,6 @@
 require 'evernote-thrift'
+require 'net/http'
+require 'nokogiri'
 
 class EvernoteApi
   def initialize(account)
@@ -40,6 +42,53 @@ class EvernoteApi
     end
   end
 
+  def save_note(title, content, author, url)
+    noteStoreTransport = Thrift::HTTPClientTransport.new(@note_store_url)
+    noteStoreProtocol = Thrift::BinaryProtocol.new(noteStoreTransport)
+    noteStore = Evernote::EDAM::NoteStore::NoteStore::Client.new(noteStoreProtocol)
+
+    resources = []
+    doc = Nokogiri::XML(content)
+    doc.css("img").each do |img_tag|
+      if img_tag["src"]
+        response = Net::HTTP.get_response(URI.parse(img_tag["src"]))
+        md5 = Digest::MD5.hexdigest(response.body)
+        mime = response.content_type
+        resources.push Evernote::EDAM::Type::Resource.new(
+          :data => Evernote::EDAM::Type::Data.new(:body => response.body),
+          :mime => mime,
+          :attributes => Evernote::EDAM::Type::ResourceAttributes.new(
+            :sourceURL => img_tag["src"]
+          )
+        )
+        img_tag.attributes["src"].remove
+        img_tag.name = "en-media"
+        img_tag["hash"] = md5
+        img_tag["type"] = mime
+      end
+    end
+    note = Evernote::EDAM::Type::Note.new(
+      :title => title,
+      :content => doc.to_xml,
+      :resources => resources,
+      :attributes => Evernote::EDAM::Type::NoteAttributes.new(
+        :author => author,
+        :source => "nyt.cooking",
+        :sourceURL => url
+      )
+    )
+    begin
+      created_note = noteStore.createNote(@account.token, note)
+      generate_note_link(created_note.guid)
+    rescue Evernote::EDAM::Error::EDAMUserException => e
+      puts "could not create note: " + e.parameter + " (error code " + e.errorCode.to_s + ")"
+      throw e
+    rescue Evernote::EDAM::Error::EDAMNotFoundException => e
+      puts "could not find Evernote notebook: " + note.notebookGuid
+      throw e
+    end
+  end
+
   private
   def request_recipes_chunk(start_index, max_notes, noteStore, filter, spec)
     notesMetadataList = noteStore.findNotesMetadata(@account.token, filter, start_index, max_notes, spec)
@@ -73,5 +122,9 @@ class EvernoteApi
     if notesMetadataList.startIndex + notesMetadataList.notes.length < notesMetadataList.totalNotes
       request_recipes_chunk(start_index + max_notes, max_notes, noteStore, filter, spec)
     end
+  end
+
+  def generate_note_link(note_guid)
+    ENV['EVERNOTE_URL'] + "/shard/" + @account.shard + "/nl/" + @account.user_id.to_s + "/" + note_guid
   end
 end

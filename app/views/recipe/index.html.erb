@@ -1,0 +1,38 @@
+<a href="/">Go home</a>
+<h1><%= @recipe.title %></h1>
+<div>
+  <button id="save">Save to Evernote</button>
+  <span id="saving">Saving...</span>
+  <span id="success">Success</span>
+  <span id="fail">Fail</span>
+</div>
+<h5>
+  <span><%= @recipe.author %></span>
+  <span class="prep_time"><%= @recipe.prep_time %></span>
+</h5>
+<div>
+  <div class="inline"><%= @recipe.intro %></div>
+  <figure class="inline">
+    <img src="<%= @recipe.pic_url %>"/>
+    <figcaption><%= @recipe.pic_credit %></figcaption>
+  </figure>
+</div>
+<hr/>
+<div>
+  <div class="inline">
+    <h5>Ingredients</h5>
+    <ul>
+      <% @recipe.ingredients.each do |ing| %>
+        <li><%= ing %></li>
+      <% end %>
+    </ul>
+  </div>
+  <div class="inline">
+    <h5>Preparation</h5>
+    <ol>
+      <% @recipe.instructions.each do |ins| %>
+        <li><%= ins %></li>
+      <% end %>
+    </ol>
+  </div>
+</div>

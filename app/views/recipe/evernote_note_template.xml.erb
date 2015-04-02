@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE en-note SYSTEM "http://xml.evernote.com/pub/enml2.dtd">
+<en-note>
+  <div style="text-align:center"><img src="http://i.imgur.com/Y3Lk12H.png" style="margin-bottom:8px;"/></div>
+  <h1><%= @recipe.title %></h1>
+  <p><i><%= @recipe.author %></i><% if @recipe.prep_time %> | <span><%= @recipe.prep_time %></span><% end %></p>
+  <div style="font:14px Helvetica,Arial,'Droid Sans',sans-serif"><br/></div>
+  <div style="font:14px Helvetica,Arial,'Droid Sans',sans-serif">
+    <% if @recipe.pic_url %>
+      <div>
+        <img src="<%= @recipe.pic_url %>"/>
+        <% if @recipe.pic_credit %>
+          <div style="color:gray;font-size:10px"><i><%= @recipe.pic_credit %></i></div>
+        <% end %>
+      </div>
+    <% end %>
+    <br />
+    <div><%= @recipe.intro %></div>
+    <hr/>
+    <h3>Ingredients</h3>
+    <ul>
+      <% @recipe.ingredients.each do |ing| %>
+        <li><%= ing %></li>
+      <% end %>
+    </ul>
+    <h3>Preparation</h3>
+    <ol>
+      <% @recipe.instructions.each do |ins| %>
+        <li><%= ins %></li>
+      <% end %>
+    </ol>
+  </div>
+</en-note>

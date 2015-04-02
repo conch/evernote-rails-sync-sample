@@ -1,0 +1,20 @@
+.inline {
+  display: inline-block;
+  max-width: 50%;
+  vertical-align: top;
+}
+figure {
+  margin: 0;
+}
+.prep_time {
+  margin-left: 10px;
+}
+#success {
+  color: green;
+}
+#fail {
+  color: red;
+}
+#saving, #success, #fail {
+  display: none;
+}

@@ -3,6 +3,7 @@ require 'oauth'
 class WelcomeController < ApplicationController
   def index
     @connected_to_evernote = session.has_key? :evernote_account_id
+    @non_evernote_recipes = Recipe.all
   end
 
   def temp_auth

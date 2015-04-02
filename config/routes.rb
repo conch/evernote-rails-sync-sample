@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   get 'logout' => 'welcome#logout'
   get 'recipes' => 'recipes#index'
   get 'recipe_thumbnail/:note_guid' => 'recipes#thumbnail'
+  get 'recipe/:id' => 'recipe#index'
+  get 'recipe/:id/save' => 'recipe#save'
 
   # Example of named route that can be invoked with purchase_url(id: product.id)
   #   get 'products/:id/purchase' => 'catalog#purchase', as: :purchase

@@ -52,6 +52,7 @@ GEM
     columnize (0.9.0)
     debug_inspector (0.0.2)
     erubis (2.7.0)
+    evernote-thrift (1.25.1)
     execjs (2.4.0)
     globalid (0.3.3)
       activesupport (>= 4.1.0)
@@ -75,6 +76,7 @@ GEM
     multi_json (1.11.0)
     nokogiri (1.6.6.2)
       mini_portile (~> 0.6.0)
+    oauth (0.4.7)
     pg (0.18.1)
     rack (1.6.0)
     rack-test (0.6.3)
@@ -152,8 +154,10 @@ PLATFORMS
 DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
+  evernote-thrift
   jbuilder (~> 2.0)
   jquery-rails
+  oauth
   pg
   rails (= 4.2.1)
   rails_12factor

@@ -1,4 +1,7 @@
-<h2>Hello World</h2>
-<p>
-  The time is now: <%= Time.now %>
-</p>
+<% if @connected_to_evernote %>
+  <div>You are connected to Evernote</div>
+  <a href='/recipes'>See your recipes</a>
+  <a href='/logout'>Unlink Evernote</a>
+<% else %>
+  <a href='/temp_auth'>Connect to Evernote</a>
+<% end %>

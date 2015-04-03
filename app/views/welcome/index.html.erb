@@ -37,7 +37,7 @@
       <span>Save recipes to this notebook: </span>
       <select name="save_in_notebook">
         <% @notebooks.each do |notebook| %>
-          <% if !@save_to_notebook && notebook.defaultNotebook || notebook.guid == @save_to_notebook %>
+          <% if (!@save_in_notebook && notebook.defaultNotebook) || notebook.guid == @save_in_notebook %>
             <option selected value="<%= notebook.guid %>"><%= notebook.name %></option>
           <% else %>
             <option value="<%= notebook.guid %>"><%= notebook.name %></option>

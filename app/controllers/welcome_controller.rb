@@ -3,7 +3,14 @@ require 'oauth'
 class WelcomeController < ApplicationController
   def index
     @connected_to_evernote = session.has_key? :evernote_account_id
-    @non_evernote_recipes = Recipe.all
+    if @connected_to_evernote
+      @non_evernote_recipes = Recipe.all
+      account = EvernoteAccount.find(session[:evernote_account_id])
+      api = EvernoteApi.new account
+      @notebooks = api.list_notebooks
+      @sync_from_notebook = account.sync_from_notebook
+      @sync_from_tags = account.sync_from_tags
+    end
   end
 
   def temp_auth
@@ -44,6 +51,36 @@ class WelcomeController < ApplicationController
     redirect_to action: "index"
   end
 
+  def update_settings
+    account = EvernoteAccount.find(session[:evernote_account_id])
+    if params['also_sync']
+      previous_sync_from_notebook = account.sync_from_notebook
+      if params['also_sync'].include?('notebook') && !params['notebook'].nil? && !params['notebook'].strip.empty?
+        account.sync_from_notebook = params['notebook']
+      else
+        account.sync_from_notebook = nil
+      end
+      if previous_sync_from_notebook != account.sync_from_notebook
+        reset_evernote_recipes account
+      end
+      previous_sync_from_tags = account.sync_from_tags
+      tag_names = params['tags'].strip.split(/\s*,\s*/)
+      if params['also_sync'].include?('tags') && !tag_names.empty?
+        account.sync_from_tags = tag_names
+      else
+        account.sync_from_tags = []
+      end
+      if !xor(previous_sync_from_tags, account.sync_from_tags).empty?
+        reset_evernote_recipes account
+      end
+    else
+      account.sync_from_notebook = nil
+      account.sync_from_tags = []
+    end
+    account.save
+    redirect_to action: "index"
+  end
+
   private
   def get_consumer
     OAuth::Consumer.new(ENV["EVERNOTE_CONSUMER_KEY"], ENV["EVERNOTE_SECRET"], {
@@ -52,6 +89,15 @@ class WelcomeController < ApplicationController
       :access_token_path => "/oauth",
       :authorize_path => "/OAuth.action"
     })
+  end
+
+  def xor(a,b)
+    (a | b) - (a & b)
+  end
+
+  def reset_evernote_recipes(account)
+    account.update_count = 0
+    EvernoteRecipe.where("evernote_account_id = " + account.id.to_s).destroy_all
   end
 
 end

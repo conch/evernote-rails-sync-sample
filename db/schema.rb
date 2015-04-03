@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150402011854) do
+ActiveRecord::Schema.define(version: 20150402224323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,8 +20,10 @@ ActiveRecord::Schema.define(version: 20150402011854) do
     t.integer "user_id"
     t.string  "token"
     t.string  "shard"
-    t.integer "token_expiration", limit: 8
-    t.integer "update_count",               default: 0
+    t.integer "token_expiration",   limit: 8
+    t.integer "update_count",                 default: 0
+    t.string  "sync_from_notebook"
+    t.string  "sync_from_tags",               default: [], array: true
   end
 
   add_index "evernote_accounts", ["user_id"], name: "index_evernote_accounts_on_user_id", unique: true, using: :btree

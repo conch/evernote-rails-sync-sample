@@ -20,16 +20,38 @@ class EvernoteApi
         :order => Evernote::EDAM::Type::NoteSortOrder::UPDATE_SEQUENCE_NUMBER,
         :words => "any: classifications_recipe:" + Evernote::EDAM::Type::CLASSIFICATION_RECIPE_SERVICE_RECIPE + " classifications_recipe:" + Evernote::EDAM::Type::CLASSIFICATION_RECIPE_USER_RECIPE
       )
+      if @account.sync_from_tags
+        @account.sync_from_tags.each do |tag|
+          noteFilter.words += " tag:\"" + tag + "\""
+        end
+      end
+      if @account.sync_from_notebook
+        noteFilter_notebook = Evernote::EDAM::NoteStore::NoteFilter.new(
+          :ascending => false,
+          :order => Evernote::EDAM::Type::NoteSortOrder::UPDATE_SEQUENCE_NUMBER,
+          :notebookGuid => @account.sync_from_notebook
+        )
+      end
       resultSpec = Evernote::EDAM::NoteStore::NotesMetadataResultSpec.new(
         :includeTitle => true,
         :includeLargestResourceSize => true,
         :includeUpdateSequenceNum => true
       )
       request_recipes_chunk(0, 100, noteStore, noteFilter, resultSpec)
+      if @account.sync_from_notebook
+        request_recipes_chunk(0, 100, noteStore, noteFilter_notebook, resultSpec)
+      end
       @account.update(update_count: syncState.updateCount)
     end
 
     EvernoteRecipe.where("evernote_account_id = " + @account.id.to_s).order(title: :asc)
+  end
+
+  def list_notebooks
+    noteStoreTransport = Thrift::HTTPClientTransport.new(@note_store_url)
+    noteStoreProtocol = Thrift::BinaryProtocol.new(noteStoreTransport)
+    noteStore = Evernote::EDAM::NoteStore::NoteStore::Client.new(noteStoreProtocol)
+    noteStore.listNotebooks(@account.token)
   end
 
   def revoke_token

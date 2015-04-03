@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   get 'temp_auth' => 'welcome#temp_auth'
   get 'callback' => 'welcome#callback'
   get 'logout' => 'welcome#logout'
+  post 'update_settings' => 'welcome#update_settings'
   get 'recipes' => 'recipes#index'
   get 'recipe_thumbnail/:note_guid' => 'recipes#thumbnail'
   get 'recipe/:id' => 'recipe#index'

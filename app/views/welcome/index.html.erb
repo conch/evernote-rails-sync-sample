@@ -1,7 +1,36 @@
 <% if @connected_to_evernote %>
   <div>You are connected to Evernote</div>
-  <a href='/recipes'>See recipes in your Evernote account</a>
-  <a href='/logout'>Unlink Evernote</a>
+  <div><a href='/recipes'>See recipes in your Evernote account</a></div>
+  <div><a href='/logout'>Unlink Evernote</a></div>
+  <br>
+  <div>
+    <div>In addition to syncing notes that are auto classified as recipes, also sync notes:</div>
+    <%= form_tag('/update_settings') do -%>
+      <% if @sync_from_notebook.nil? || @sync_from_notebook.strip.empty? %>
+        <input type='checkbox' name='also_sync[]' value='notebook' id='sync_notebook'/><label for='sync_notebook'>in this notebook:</label>
+      <% else %>
+        <input type='checkbox' checked name='also_sync[]' value='notebook' id='sync_notebook'/><label for='sync_notebook'>in this notebook:</label>
+      <% end %>
+      <select name='notebook'>
+        <% @notebooks.each do |notebook| %>
+          <% if @sync_from_notebook == notebook.guid %>
+            <option selected value="<%= notebook.guid %>"><%= notebook.name %></option>
+          <% else %>
+            <option value="<%= notebook.guid %>"><%= notebook.name %></option>
+          <% end %>
+        <% end %>
+      </select>
+      <br>
+      <% if @sync_from_tags.empty? %>
+        <input type='checkbox' name='also_sync[]' value='tags' id='sync_tags'/><label for='sync_tags'>with these tags (comma separated):</label>
+      <% else %>
+        <input type='checkbox' checked name='also_sync[]' value='tags' id='sync_tags'/><label for='sync_tags'>with these tags (comma separated):</label>
+      <% end %>
+      <input name='tags' value='<%= @sync_from_tags.join(',') %>'/>
+      <br>
+      <%= submit_tag 'Save settings' %>
+    <% end -%>
+  </div>
   <hr/>
   <h4>Some recipes not in your Evernote account</h4>
   <% @non_evernote_recipes.each do |r| %>

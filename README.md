@@ -2,6 +2,12 @@
 Sample Ruby on Rails app that shows how to perform synchronization with Evernote
 
 ## Prerequisites
+### Ruby, Gems, Rails
+This runs on Ruby 2.2.1 and Rails 4. Before you run the server, run
+<pre>
+bundle install
+</pre>
+to install the gems from the `Gemfile`. This assumes you have the Bundler gem installed
 ### PostgreSQL
 To get the foundation of this app, run 'rails new myapp --database=postgresql'
 

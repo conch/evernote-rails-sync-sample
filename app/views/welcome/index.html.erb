@@ -19,7 +19,7 @@
       <% end %>
       <select name='notebook'>
         <% @notebooks.each do |notebook| %>
-          <% if @sync_from_notebook == notebook.guid %>
+          <% if (!@sync_from_notebook && notebook.defaultNotebook) || @sync_from_notebook == notebook.guid %>
             <option selected value="<%= notebook.guid %>"><%= notebook.name %></option>
           <% else %>
             <option value="<%= notebook.guid %>"><%= notebook.name %></option>
@@ -37,7 +37,11 @@
       <span>Save recipes to this notebook: </span>
       <select name="save_in_notebook">
         <% @notebooks.each do |notebook| %>
-          <option value="<%= notebook.guid %>"><%= notebook.name %></option>
+          <% if !@save_to_notebook && notebook.defaultNotebook || notebook.guid == @save_to_notebook %>
+            <option selected value="<%= notebook.guid %>"><%= notebook.name %></option>
+          <% else %>
+            <option value="<%= notebook.guid %>"><%= notebook.name %></option>
+          <% end %>
         <% end %>
       </select>
       <br><br>

@@ -10,6 +10,7 @@ class WelcomeController < ApplicationController
       @notebooks = api.list_notebooks
       @sync_from_notebook = account.sync_from_notebook
       @sync_from_tags = account.sync_from_tags
+      @save_in_notebook = account.save_in_notebook
     end
   end
 

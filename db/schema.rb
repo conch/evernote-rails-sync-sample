@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150402224323) do
+ActiveRecord::Schema.define(version: 20150403172707) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20150402224323) do
     t.integer "update_count",                 default: 0
     t.string  "sync_from_notebook"
     t.string  "sync_from_tags",               default: [], array: true
+    t.string  "save_in_notebook"
   end
 
   add_index "evernote_accounts", ["user_id"], name: "index_evernote_accounts_on_user_id", unique: true, using: :btree

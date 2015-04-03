@@ -77,6 +77,7 @@ class WelcomeController < ApplicationController
       account.sync_from_notebook = nil
       account.sync_from_tags = []
     end
+    account.save_in_notebook = params["save_in_notebook"]
     account.save
     redirect_to action: "index"
   end

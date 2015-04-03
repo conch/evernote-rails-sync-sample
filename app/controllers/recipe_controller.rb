@@ -5,8 +5,9 @@ class RecipeController < ApplicationController
 
   def save
     @recipe = Recipe.find(params[:id])
-    api = EvernoteApi.new EvernoteAccount.find(session[:evernote_account_id])
+    account = EvernoteAccount.find session[:evernote_account_id]
+    api = EvernoteApi.new account
     content = render_to_string "evernote_note_template.xml.erb"
-    render plain: api.save_note(@recipe.title, content, @recipe.author, @recipe.url)
+    render plain: api.save_note(@recipe.title, content, account.save_in_notebook, @recipe.author, @recipe.url)
   end
 end

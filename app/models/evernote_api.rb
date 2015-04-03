@@ -64,7 +64,7 @@ class EvernoteApi
     end
   end
 
-  def save_note(title, content, author, url)
+  def save_note(title, content, notebookGuid, author, url)
     noteStoreTransport = Thrift::HTTPClientTransport.new(@note_store_url)
     noteStoreProtocol = Thrift::BinaryProtocol.new(noteStoreTransport)
     noteStore = Evernote::EDAM::NoteStore::NoteStore::Client.new(noteStoreProtocol)
@@ -92,6 +92,7 @@ class EvernoteApi
     note = Evernote::EDAM::Type::Note.new(
       :title => title,
       :content => doc.to_xml,
+      :notebookGuid => notebookGuid,
       :resources => resources,
       :attributes => Evernote::EDAM::Type::NoteAttributes.new(
         :author => author,
